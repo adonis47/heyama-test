@@ -1,0 +1,31 @@
+{
+  "name": "heyama",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Heyama - Object management application with image upload",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "api:dev": "pnpm --filter @heyama/api dev",
+    "api:build": "pnpm --filter @heyama/api build",
+    "web:dev": "pnpm --filter @heyama/web dev",
+    "web:build": "pnpm --filter @heyama/web build",
+    "mobile:start": "pnpm --filter @heyama/mobile start",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\""
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "prettier": "^3.2.0",
+    "turbo": "^2.0.0",
+    "typescript": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.15.0"
+}
