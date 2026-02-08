@@ -1,0 +1,78 @@
+version: "3.8"
+services:
+  api:
+    image: adonisyimga/heyama-api:prod
+    container_name: heyama-api
+    restart: unless-stopped
+    env_file: .env.production
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - MONGODB_URI=mongodb://mongodb:27017/heyama
+      - S3_ENDPOINT=http://minio:9000
+      - S3_ACCESS_KEY=${MINIO_ROOT_USER}
+      - S3_SECRET_KEY=${MINIO_ROOT_PASSWORD}
+      - S3_BUCKET=heyama-uploads
+      - S3_REGION=us-east-1
+      - CORS_ORIGIN=${CORS_ORIGIN}
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongodb
+      - minio
+    networks:
+      - heyama-net
+
+  web:
+    image: adonisyimga/heyama-web:prod
+    container_name: heyama-web
+    restart: unless-stopped
+    env_file: .env.production
+    environment:
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+      - NEXT_PUBLIC_WS_URL=${NEXT_PUBLIC_WS_URL}
+      - NODE_ENV=production
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    networks:
+      - heyama-net
+
+  mongodb:
+    image: mongo:7
+    container_name: heyama-mongodb
+    restart: unless-stopped
+    volumes:
+      - mongodb-data:/data/db
+      - mongodb-config:/data/configdb
+    ports:
+      - "27017:27017"
+    networks:
+      - heyama-net
+
+  minio:
+    image: minio/minio:latest
+    container_name: heyama-minio
+    restart: unless-stopped
+    env_file: .env.production
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+    volumes:
+      - minio-data:/data
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+      - heyama-net
+
+volumes:
+  mongodb-data:
+  mongodb-config:
+  minio-data:
+
+networks:
+  heyama-net:
+    driver: bridge
