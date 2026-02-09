@@ -9,9 +9,11 @@ export class StorageService {
   private readonly s3Client: S3Client;
   private readonly bucket: string;
   private readonly endpoint: string;
+  private readonly publicEndpoint: string;
 
   constructor(private configService: ConfigService) {
     this.endpoint = this.configService.get<string>('s3.endpoint') || '';
+    this.publicEndpoint = this.configService.get<string>('s3.publicEndpoint') || '';
     this.bucket = this.configService.get<string>('s3.bucket') || 'heyama-uploads';
 
     this.s3Client = new S3Client({
@@ -40,8 +42,9 @@ export class StorageService {
 
     this.logger.log(`Image uploaded: ${key}`);
 
-    if (this.endpoint) {
-      return `${this.endpoint}/${this.bucket}/${key}`;
+    const base = this.publicEndpoint || this.endpoint;
+    if (base) {
+      return `${base}/${this.bucket}/${key}`;
     }
     return `https://${this.bucket}.s3.amazonaws.com/${key}`;
   }

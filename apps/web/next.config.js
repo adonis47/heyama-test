@@ -1,10 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'http',
         hostname: 'localhost',
+        port: '9000',
+        pathname: '/heyama-uploads/**',
+      },
+      {
+        protocol: 'http',
+        hostname: '148.113.174.191',
         port: '9000',
         pathname: '/heyama-uploads/**',
       },
